@@ -233,16 +233,19 @@ a:not(.project-link):hover {
   }
 }
 
-/* ─── Мобиле ──────────────────────────────────────────────────────────────── */
+/* ─── Мобила ──────────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .sidebar {
     position: relative;
     width: 100%;
     height: auto;
     padding: 1.5rem;
+    padding-bottom: 0;        
   }
 
-  .sidebar-nav { margin: 1.5rem 0; }
+  .sidebar-nav {
+    margin: 1.5rem 0 0 0;     
+  }
 
   .menu-grid { flex-wrap: wrap; }
 
@@ -252,7 +255,7 @@ a:not(.project-link):hover {
   .main-content {
     margin-left: 0;
     width: 100%;
-    padding: 1rem;
+    padding: 1.5rem 1rem;    
   }
 
   .projects-list { padding-bottom: 1rem; }
