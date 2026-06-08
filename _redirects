@@ -1,0 +1,17 @@
+# Cloudflare Pages — SPA routing
+#
+# ЗАЧЕМ ЭТОТ ФАЙЛ?
+# Твой script.js использует history.pushState() для навигации:
+# /info, /archive — это не отдельные папки, это виртуальные пути.
+#
+# Когда пользователь вводит https://arnesta.pro/info напрямую
+# в строку браузера — Cloudflare ищет файл /info/index.html
+# которого нет, и возвращает 404.
+#
+# Эта строчка говорит Cloudflare: «На ЛЮБОЙ запрос (/*) —
+# отдавай /index.html с кодом 200 (OK), а не 404».
+# JavaScript в index.html сам разберётся какую страницу показать.
+#
+# Формат: [from] [to] [status_code]
+
+/*  /index.html  200

@@ -1,0 +1,10 @@
+# robots.txt — инструкции для поисковых роботов
+#
+# User-agent: * означает «всем роботам»
+# Disallow: (пустой) означает «ничего не запрещаем»
+# Sitemap: адрес карты сайта — Google найдёт её автоматически
+
+User-agent: *
+Disallow:
+
+Sitemap: https://arnesta.pro/sitemap.xml
