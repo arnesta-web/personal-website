@@ -24,7 +24,7 @@
   --text-muted:  #666;
   --text-link:   #454545;
 
-  --font-base: clamp(1.1rem, 1vw, 1.5rem);
+  --font-base: clamp(1rem, 1vw, 1.5rem);
   --font-lg:   clamp(1.4rem, 1vw, 1.8rem);
 }
 
