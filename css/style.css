@@ -252,7 +252,7 @@ a:not(.project-link):hover {
   .main-content {
     margin-left: 0;
     width: 100%;
-    padding: 1.5rem;
+    padding: 1rem;
   }
 
   .projects-list { padding-bottom: 1rem; }
