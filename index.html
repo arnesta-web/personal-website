@@ -4,6 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+<script>
+  var redirect = sessionStorage.getItem('spa-redirect');
+  if (redirect) {
+    sessionStorage.removeItem('spa-redirect');
+    history.replaceState(null, null, redirect);
+  }
+</script>
+
   <title>Настя Юрьева</title>
   <meta name="description" content="Настя Юрьева — дизайнер и арт-директор, профессионально занимающаяся поиском смыслов, нужных слов и визуальных образов, чтобы сделать из этого хороший сайт." />
   <meta name="author" content="Настя Юрьева" />
