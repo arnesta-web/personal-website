@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <script>
+    // GitHub Pages не умеет делать редирект всех путей на index.html
+    // как Cloudflare. Поэтому при заходе на /info или /archive
+    // GitHub отдаёт эту страницу с ошибкой 404.
+    //
+    // Что делаем: сохраняем путь (/archive, /info) в sessionStorage
+    // и сразу отправляем пользователя на главную страницу (/).
+    // index.html при загрузке проверит sessionStorage,
+    // восстановит путь и покажет нужную страницу.
+
+    sessionStorage.setItem('spa-redirect', location.pathname);
+    location.replace('/');
+  </script>
+</head>
+<body></body>
+</html>
