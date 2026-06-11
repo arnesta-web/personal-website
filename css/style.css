@@ -182,7 +182,6 @@ a:not(.project-link):hover {
   padding: 0;
   cursor: pointer;
   background: rgba(255 255 255 / 0.5);
-  box-shadow: 0 0 2px rgba(0 0 0 / 0.3);
   transition: background 0.2s;
   pointer-events: auto;
 }
