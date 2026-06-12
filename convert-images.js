@@ -2,28 +2,28 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
-const IMAGES_DIR = path.join(__dirname, 'images');
+// ─── НАСТРОЙКИ ──────────────────────────────────────────────────────────────
+const IMAGES_DIR = path.join(__dirname, 'images');   // папка с проектами
+const MAX_WIDTH = 1680;                              // максимальная ширина
+const MAX_HEIGHT = null;                             // null = без ограничения высоты
 
-// ─── Настройки (можно менять под себя) ──────────────────────────────────────
-const MAX_WIDTH = 1900;          // максимальная ширина, высота подстроится
-const MAX_HEIGHT = null;         // можно задать число, если нужно ограничить высоту
-const WEBP_QUALITY = 90;         // качество near-lossless (0–100), 90 — оптимально
+const WEBP_MODE = 'lossy';          // 'lossy' / 'nearLossless' / 'lossless'
+const WEBP_QUALITY = 92;            // качество (0–100)
+const WEBP_EFFORT = 6;              // 6 – макс. сжатие, медленнее, но файл меньше
 
-// Удалять ли оригиналы после успешной конвертации
-const DELETE_ORIGINALS = false;  // пока false, чтобы проверить результат
+const DELETE_ORIGINALS = false;     // ★ поставь true, когда убедишься, что всё ок
 
-// ─── Обработка одной папки проекта ──────────────────────────────────────────
+// ─── ОДИН ПРОЕКТ ────────────────────────────────────────────────────────────
 async function processProject(projectName) {
   const projectPath = path.join(IMAGES_DIR, projectName);
   const files = fs.readdirSync(projectPath);
 
-  // только растровые картинки, не webp
   const images = files.filter(f => {
     const ext = path.extname(f).toLowerCase();
     return ['.jpg', '.jpeg', '.png'].includes(ext);
   });
 
-  const result = [];   // имена получившихся webp-файлов
+  const result = [];
   let counter = 1;
 
   for (const imgFile of images) {
@@ -33,18 +33,30 @@ async function processProject(projectName) {
 
     console.log(`  → ${imgFile}  =>  ${outputName}`);
 
+    // Собираем настройки WebP
+    let webpOptions;
+    switch (WEBP_MODE) {
+      case 'lossless':
+        webpOptions = { lossless: true, effort: WEBP_EFFORT };
+        break;
+      case 'nearLossless':
+        webpOptions = { nearLossless: true, quality: WEBP_QUALITY, effort: WEBP_EFFORT };
+        break;
+      case 'lossy':
+      default:
+        webpOptions = { lossless: false, quality: WEBP_QUALITY, effort: WEBP_EFFORT, smartSubsample: true };
+        break;
+    }
+
     await sharp(inputPath)
       .resize(MAX_WIDTH, MAX_HEIGHT, {
-        withoutEnlargement: true,
-        fit: 'inside',
+        withoutEnlargement: true,   // не увеличивать маленькие
+        fit: 'inside',              // вписать с сохранением пропорций
       })
-      .webp({
-        nearLossless: true,
-        quality: WEBP_QUALITY,
-      })
+      .webp(webpOptions)
       .toFile(outputPath);
 
-    // удаляем оригинал, если включено
+    // Удаляем оригинал, если включён флаг
     if (DELETE_ORIGINALS) {
       fs.unlinkSync(inputPath);
     }
@@ -54,7 +66,7 @@ async function processProject(projectName) {
   }
 
   if (images.length === 0) {
-    console.log(`  (нет новых изображений для конвертации)`);
+    console.log(`  (нет новых изображений)`);
   } else {
     console.log(`  Готово: ${images.length} шт.`);
   }
@@ -62,14 +74,24 @@ async function processProject(projectName) {
   return result;
 }
 
-// ─── Главная ─────────────────────────────────────────────────────────────────
+// ─── ЗАПУСК ─────────────────────────────────────────────────────────────────
 (async () => {
-  // собираем список подпапок в images
+  if (!fs.existsSync(IMAGES_DIR)) {
+    console.log('⚠️  Папка images не найдена. Создайте её и положите внутрь папки проектов.');
+    return;
+  }
+
   const projectDirs = fs.readdirSync(IMAGES_DIR).filter(name => {
     return fs.statSync(path.join(IMAGES_DIR, name)).isDirectory();
   });
 
-  console.log('🖼  Конвертация изображений в WebP (near-lossless)…\n');
+  if (projectDirs.length === 0) {
+    console.log('⚠️  В папке images нет подпапок проектов.');
+    return;
+  }
+
+  console.log('🖼  Оптимизация изображений в WebP (режим ' + WEBP_MODE + ', качество ' + WEBP_QUALITY + ', effort ' + WEBP_EFFORT + ')...\n');
+
   const manifest = {};
 
   for (const dir of projectDirs) {
@@ -77,8 +99,14 @@ async function processProject(projectName) {
     manifest[dir] = await processProject(dir);
   }
 
-  // сохраняем манифест для возможной динамической подгрузки в будущем
+  // Сохраняем манифест (опционально, пригодится для динамической подгрузки)
   const manifestPath = path.join(__dirname, 'images-manifest.json');
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
   console.log(`\n✅  Готово! Манифест сохранён в ${manifestPath}`);
+
+  if (DELETE_ORIGINALS) {
+    console.log('🗑️  Оригиналы удалены.');
+  } else {
+    console.log('💡 Оригиналы сохранены. Чтобы удалять автоматически, поставьте DELETE_ORIGINALS = true в начале скрипта.');
+  }
 })();
