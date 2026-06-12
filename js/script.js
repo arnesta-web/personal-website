@@ -7,14 +7,66 @@
       minute: '2-digit',
       second: '2-digit',
     });
-    document.getElementById('live-time')?.textContent !== undefined &&
-      (document.getElementById('live-time').textContent = timeStr);
-    document.getElementById('live-time-mobile')?.textContent !== undefined &&
-      (document.getElementById('live-time-mobile').textContent = timeStr);
+    const liveTime = document.getElementById('live-time');
+    const liveTimeMobile = document.getElementById('live-time-mobile');
+    if (liveTime) liveTime.textContent = timeStr;
+    if (liveTimeMobile) liveTimeMobile.textContent = timeStr;
   }
 
   updateTime();
   setInterval(updateTime, 1000);
+
+  // ─── Манифест адаптивных изображений ───────────────────────────────────────
+  let imagesManifest = null;
+
+  async function loadImagesManifest() {
+    if (imagesManifest) return imagesManifest;
+    try {
+      const res = await fetch('/images-manifest.json');
+      if (res.ok) imagesManifest = await res.json();
+    } catch (e) {
+      console.warn('Манифест изображений не загружен, srcset не будет добавлен.');
+    }
+    return imagesManifest;
+  }
+
+  // ─── Улучшение изображений (srcset из манифеста) ───────────────────────────
+  function enhanceImages(container) {
+    const imgs = container.querySelectorAll('.slide img');
+    if (!imgs.length) return;
+
+    if (!imagesManifest) {
+      loadImagesManifest().then(() => enhanceImagesNow(imgs));
+    } else {
+      enhanceImagesNow(imgs);
+    }
+  }
+
+  function enhanceImagesNow(imgs) {
+    // Собираем все доступные ширины из манифеста
+    const allSizes = new Set();
+    for (const project in imagesManifest) {
+      for (const base in imagesManifest[project]) {
+        imagesManifest[project][base].forEach(item => allSizes.add(item.width));
+      }
+    }
+    const sizesArray = [...allSizes].sort((a, b) => a - b);
+    if (sizesArray.length === 0) return;
+
+    imgs.forEach(img => {
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      // Ищем паттерн: что-то/имя-ЦИФРЫ.webp
+      const match = src.match(/^(.+)-(\d+)\.webp$/);
+      if (!match) return;
+
+      const basePath = match[1];   // "/images/project/project_N"
+      const srcset = sizesArray.map(w => `${basePath}-${w}.webp ${w}w`).join(', ');
+      img.setAttribute('srcset', srcset);
+      img.setAttribute('sizes', '(max-width: 768px) 100vw, 60vw');
+    });
+  }
 
   // ─── Галерея с непрерывным переключением ────────────────────────────────────
 
@@ -48,7 +100,7 @@
         updateFromPosition(e.clientX);
       });
 
-      // Меняем курсор в зависимости от половины (декоративно)
+      // Меняем системный курсор для подсказки
       slider.addEventListener('mousemove', (e) => {
         const { left, width } = slider.getBoundingClientRect();
         slider.style.cursor = (e.clientX - left) < width / 2 ? 'w-resize' : 'e-resize';
@@ -60,7 +112,7 @@
 
       // Мобильные: свайп (движение пальца)
       slider.addEventListener('touchmove', (e) => {
-        e.preventDefault();                     // не даём странице скроллиться
+        e.preventDefault();
         const touch = e.touches[0];
         updateFromPosition(touch.clientX);
       }, { passive: false });
@@ -81,6 +133,9 @@
         img.addEventListener('dragstart', e => e.preventDefault());
       });
 
+      // Адаптивные srcset для картинок в этом слайдере
+      enhanceImages(slider);
+
       slider.dataset.initialized = 'true';
     });
   }
@@ -90,7 +145,6 @@
   const mainContent = document.getElementById('main-content');
   const homeSnapshot = mainContent.innerHTML;
 
-  // Сохраняем футер отдельно, чтобы вставлять его в загружаемые страницы
   const footerHTML = document.querySelector('.page-footer')?.outerHTML ?? '';
 
   const routes = {
@@ -101,6 +155,7 @@
   async function navigate(page) {
     if (page === 'home') {
       mainContent.innerHTML = homeSnapshot;
+      initSliders(mainContent);
     } else {
       try {
         const res = await fetch(routes[page]);
@@ -110,12 +165,11 @@
       } catch {
         mainContent.innerHTML = '<p style="padding:2rem">Ошибка загрузки</p>';
       }
+      initSliders(mainContent);
     }
-    initSliders(mainContent);
     window.scrollTo(0, 0);
   }
 
-  // Делегирование: один обработчик на все ссылки меню
   document.querySelector('.sidebar-nav').addEventListener('click', e => {
     const link = e.target.closest('a[data-link]');
     if (!link) return;
@@ -130,8 +184,6 @@
   });
 
   // ─── Инициализация ───────────────────────────────────────────────────────────
-
-  // Восстанавливаем страницу при прямом заходе на /info или /archive
   const path = window.location.pathname.replace(/\/$/, '');
   const initialPage = path === '/info' ? 'info' : path === '/archive' ? 'archive' : null;
 

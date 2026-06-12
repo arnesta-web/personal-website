@@ -2,111 +2,60 @@ const fs = require('fs');
 const path = require('path');
 const sharp = require('sharp');
 
-// ─── НАСТРОЙКИ ──────────────────────────────────────────────────────────────
-const IMAGES_DIR = path.join(__dirname, 'images');   // папка с проектами
-const MAX_WIDTH = 1680;                              // максимальная ширина
-const MAX_HEIGHT = null;                             // null = без ограничения высоты
+const IMAGES_DIR = path.join(__dirname, 'images');
+const SIZES = [800, 1400, 2000];   // ширины, которые будут создаваться
+const WEBP_QUALITY = 92;
+const WEBP_EFFORT = 6;
+const DELETE_ORIGINALS = false;      // потом поменяешь на true
 
-const WEBP_MODE = 'lossy';          // 'lossy' / 'nearLossless' / 'lossless'
-const WEBP_QUALITY = 92;            // качество (0–100)
-const WEBP_EFFORT = 6;              // 6 – макс. сжатие, медленнее, но файл меньше
-
-const DELETE_ORIGINALS = false;     // ★ поставь true, когда убедишься, что всё ок
-
-// ─── ОДИН ПРОЕКТ ────────────────────────────────────────────────────────────
 async function processProject(projectName) {
   const projectPath = path.join(IMAGES_DIR, projectName);
-  const files = fs.readdirSync(projectPath);
-
-  const images = files.filter(f => {
+  const files = fs.readdirSync(projectPath).filter(f => {
     const ext = path.extname(f).toLowerCase();
     return ['.jpg', '.jpeg', '.png'].includes(ext);
   });
 
-  const result = [];
+  const manifest = {};
   let counter = 1;
 
-  for (const imgFile of images) {
+  for (const imgFile of files) {
     const inputPath = path.join(projectPath, imgFile);
-    const outputName = `${projectName}_${counter}.webp`;
-    const outputPath = path.join(projectPath, outputName);
+    const baseName = `${projectName}_${counter}`;
+    const outputs = [];
 
-    console.log(`  → ${imgFile}  =>  ${outputName}`);
-
-    // Собираем настройки WebP
-    let webpOptions;
-    switch (WEBP_MODE) {
-      case 'lossless':
-        webpOptions = { lossless: true, effort: WEBP_EFFORT };
-        break;
-      case 'nearLossless':
-        webpOptions = { nearLossless: true, quality: WEBP_QUALITY, effort: WEBP_EFFORT };
-        break;
-      case 'lossy':
-      default:
-        webpOptions = { lossless: false, quality: WEBP_QUALITY, effort: WEBP_EFFORT, smartSubsample: true };
-        break;
+    for (const width of SIZES) {
+      const outputName = `${baseName}-${width}.webp`;
+      const outputPath = path.join(projectPath, outputName);
+      await sharp(inputPath)
+        .resize(width, null, { withoutEnlargement: true })
+        .webp({ quality: WEBP_QUALITY, effort: WEBP_EFFORT, smartSubsample: true })
+        .toFile(outputPath);
+      outputs.push({ width, file: outputName });
     }
 
-    await sharp(inputPath)
-      .resize(MAX_WIDTH, MAX_HEIGHT, {
-        withoutEnlargement: true,   // не увеличивать маленькие
-        fit: 'inside',              // вписать с сохранением пропорций
-      })
-      .webp(webpOptions)
-      .toFile(outputPath);
+    if (DELETE_ORIGINALS) fs.unlinkSync(inputPath);
 
-    // Удаляем оригинал, если включён флаг
-    if (DELETE_ORIGINALS) {
-      fs.unlinkSync(inputPath);
-    }
-
-    result.push(outputName);
+    manifest[baseName] = outputs;
     counter++;
   }
 
-  if (images.length === 0) {
-    console.log(`  (нет новых изображений)`);
-  } else {
-    console.log(`  Готово: ${images.length} шт.`);
-  }
-
-  return result;
+  return manifest;
 }
 
-// ─── ЗАПУСК ─────────────────────────────────────────────────────────────────
 (async () => {
-  if (!fs.existsSync(IMAGES_DIR)) {
-    console.log('⚠️  Папка images не найдена. Создайте её и положите внутрь папки проектов.');
-    return;
-  }
-
-  const projectDirs = fs.readdirSync(IMAGES_DIR).filter(name => {
-    return fs.statSync(path.join(IMAGES_DIR, name)).isDirectory();
-  });
-
-  if (projectDirs.length === 0) {
-    console.log('⚠️  В папке images нет подпапок проектов.');
-    return;
-  }
-
-  console.log('🖼  Оптимизация изображений в WebP (режим ' + WEBP_MODE + ', качество ' + WEBP_QUALITY + ', effort ' + WEBP_EFFORT + ')...\n');
-
-  const manifest = {};
+  const projectDirs = fs.readdirSync(IMAGES_DIR).filter(name =>
+    fs.statSync(path.join(IMAGES_DIR, name)).isDirectory()
+  );
+  const fullManifest = {};
 
   for (const dir of projectDirs) {
     console.log(`📁 ${dir}`);
-    manifest[dir] = await processProject(dir);
+    fullManifest[dir] = await processProject(dir);
   }
 
-  // Сохраняем манифест (опционально, пригодится для динамической подгрузки)
-  const manifestPath = path.join(__dirname, 'images-manifest.json');
-  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
-  console.log(`\n✅  Готово! Манифест сохранён в ${manifestPath}`);
-
-  if (DELETE_ORIGINALS) {
-    console.log('🗑️  Оригиналы удалены.');
-  } else {
-    console.log('💡 Оригиналы сохранены. Чтобы удалять автоматически, поставьте DELETE_ORIGINALS = true в начале скрипта.');
-  }
+  fs.writeFileSync(
+    path.join(__dirname, 'images-manifest.json'),
+    JSON.stringify(fullManifest, null, 2)
+  );
+  console.log('✅ Все размеры сгенерированы.');
 })();
