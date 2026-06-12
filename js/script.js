@@ -64,7 +64,7 @@
       const basePath = match[1];   // "/images/project/project_N"
       const srcset = sizesArray.map(w => `${basePath}-${w}.webp ${w}w`).join(', ');
       img.setAttribute('srcset', srcset);
-      img.setAttribute('sizes', '(max-width: 768px) 100vw, 60vw');
+      img.setAttribute('sizes', '(max-width: 768px) 100vw, calc(60vw - 4rem)');
     });
   }
 
