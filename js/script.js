@@ -16,81 +16,64 @@
   updateTime();
   setInterval(updateTime, 1000);
 
-  // ─── Слайдеры ────────────────────────────────────────────────────────────────
+  // ─── Галерея с непрерывным переключением ────────────────────────────────────
 
   function initSliders(root = document) {
     root.querySelectorAll('.slider:not([data-initialized])').forEach(slider => {
       const slides = [...slider.querySelectorAll('.slide')];
       const total = slides.length;
-      let current = 0;
-      let pointerStartX = 0;
-      let didSwipe = false;
-
-      // Точки-навигаторы (только на мобиле через CSS)
-      const dotsContainer = Object.assign(document.createElement('div'), {
-        className: 'dots-container',
-      });
-      slides.forEach((_, i) => {
-        const dot = Object.assign(document.createElement('button'), {
-          className: `dot${i === 0 ? ' active' : ''}`,
-          type: 'button',
-        });
-        dot.setAttribute('aria-label', `Перейти к слайду ${i + 1}`);
-        dot.addEventListener('click', e => { e.stopPropagation(); goTo(i); });
-        dotsContainer.appendChild(dot);
-      });
-      slider.appendChild(dotsContainer);
-      const dots = [...dotsContainer.querySelectorAll('.dot')];
-
-      function goTo(index) {
-        if (index === current) return;
-        slides[current].classList.remove('active');
-        dots[current].classList.remove('active');
-        current = index;
-        slides[current].classList.add('active');
-        dots[current].classList.add('active');
+      if (total < 2) {
+        slider.dataset.initialized = 'true';
+        return;
       }
 
-      const prev = () => goTo((current - 1 + total) % total);
-      const next = () => goTo((current + 1) % total);
+      let current = 0;
 
-      // Курсор (десктоп)
-      slider.addEventListener('mousemove', e => {
+      function goTo(index) {
+        if (index === current || index < 0 || index >= total) return;
+        slides[current].classList.remove('active');
+        slides[index].classList.add('active');
+        current = index;
+      }
+
+      function updateFromPosition(clientX) {
+        const rect = slider.getBoundingClientRect();
+        const x = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+        const index = Math.min(total - 1, Math.floor(x * total));
+        goTo(index);
+      }
+
+      // Движение мыши (без зажатия) — переключение по позиции курсора
+      slider.addEventListener('mousemove', (e) => {
+        updateFromPosition(e.clientX);
+      });
+
+      // Меняем курсор в зависимости от половины (декоративно)
+      slider.addEventListener('mousemove', (e) => {
         const { left, width } = slider.getBoundingClientRect();
         slider.style.cursor = (e.clientX - left) < width / 2 ? 'w-resize' : 'e-resize';
       });
-      slider.addEventListener('mouseleave', () => { slider.style.cursor = ''; });
 
-      // Клик (десктоп)
-      slider.addEventListener('click', e => {
-        if (didSwipe) { didSwipe = false; return; }
-        const { left, width } = slider.getBoundingClientRect();
-        (e.clientX - left) < width / 2 ? prev() : next();
+      slider.addEventListener('mouseleave', () => {
+        slider.style.cursor = '';
       });
 
-      // Свайп (pointer events — работает и на тач и на мышке)
-      slider.addEventListener('pointerdown', e => {
-        if (e.pointerType === 'mouse' && e.button !== 0) return;
-        pointerStartX = e.clientX;
-        didSwipe = false;
-        slider.setPointerCapture(e.pointerId);
-        if (e.pointerType === 'mouse') e.preventDefault();
-      });
+      // Мобильные: свайп (движение пальца)
+      slider.addEventListener('touchmove', (e) => {
+        e.preventDefault();                     // не даём странице скроллиться
+        const touch = e.touches[0];
+        updateFromPosition(touch.clientX);
+      }, { passive: false });
 
-      slider.addEventListener('pointerup', e => {
-        const delta = e.clientX - pointerStartX;
-        if (Math.abs(delta) > 30) {
-          didSwipe = true;
-          delta < 0 ? next() : prev();
+      // Клавиатура для доступности
+      slider.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          goTo((current - 1 + total) % total);
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          goTo((current + 1) % total);
         }
-      });
-
-      slider.addEventListener('pointercancel', () => { didSwipe = false; });
-
-      // Клавиатура
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
-        else if (e.key === 'ArrowRight') { e.preventDefault(); next(); }
       });
 
       // Запрет перетаскивания картинок

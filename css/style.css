@@ -1,4 +1,3 @@
-
 @font-face {
   font-family: 'Helvetica Neue';
   src: url('../fonts/HelveticaNeue-Roman.woff2') format('woff2'),
@@ -7,7 +6,6 @@
   font-style: normal;
   font-display: swap;
 }
-
 
 @font-face {
   font-family: 'Helvetica Neue';
@@ -35,11 +33,10 @@
   padding: 0;
   box-sizing: border-box;
   font-weight: 500;
-  scrollbar-width: none;          
-  -ms-overflow-style: none;      
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 *::-webkit-scrollbar { display: none; }
-
 
 body {
   font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -50,7 +47,6 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
-
 
 a:not(.project-link) {
   color: var(--text);
@@ -64,12 +60,12 @@ a:not(.project-link):hover {
   color: var(--text-link);
   text-decoration: underline;
   text-decoration-color: var(--text-link);
-  transition: none;              
+  transition: none;
 }
 
 .sidebar {
   position: fixed;
-  inset: 0 auto 0 0;              
+  inset: 0 auto 0 0;
   width: 40vw;
   height: 100vh;
   background: var(--bg);
@@ -86,7 +82,6 @@ a:not(.project-link):hover {
   line-height: 1.2;
 }
 
-/* Навигация */
 .sidebar-nav {
   flex: 1;
   display: flex;
@@ -116,13 +111,11 @@ a:not(.project-link):hover {
   color: var(--text);
 }
 
-/* ─── Время ───────────────────────────────────────────────────────────────── */
 .live-time {
   white-space: nowrap;
-  font-feature-settings: "tnum";  
+  font-feature-settings: "tnum";
 }
 
-/* ─── Основной контент ────────────────────────────────────────────────────── */
 .main-content {
   margin-left: 40vw;
   padding: 2rem;
@@ -130,7 +123,6 @@ a:not(.project-link):hover {
   min-height: 100vh;
 }
 
-/* ─── Список проектов ─────────────────────────────────────────────────────── */
 .projects-list {
   display: flex;
   flex-direction: column;
@@ -138,56 +130,40 @@ a:not(.project-link):hover {
   padding-bottom: 3rem;
 }
 
-/* ─── Слайдер ─────────────────────────────────────────────────────────────── */
+/* ─── Галерея с непрерывным переключением ──────────────────────────────── */
 .slider {
   position: relative;
-  display: block;
   width: 100%;
+  touch-action: pan-y;          /* разрешаем вертикальный скролл */
   user-select: none;
-  touch-action: pan-y;
+  cursor: e-resize;
 }
 .slider:focus { outline: none; }
 
-.slides { position: relative; width: 100%; }
-
-.slide {
-  display: none;
-  max-width: 100%;
+.slides {
+  display: grid;
 }
-.slide.active { display: block; }
-
+.slides > .slide {
+  grid-area: 1/1;
+  width: 100%;
+}
 .slide img {
   display: block;
-  max-width: 100%;
+  width: 100%;
   height: auto;
   pointer-events: none;
+  visibility: hidden;
+}
+.slide.active img {
+  visibility: visible;
 }
 
-/* Точки (видны только на мобиле) */
+/* скрываем контейнер точек, если где-то остался */
 .dots-container {
-  position: absolute;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: none;
-  gap: 6px;
-  z-index: 2;
-  pointer-events: none;
+  display: none !important;
 }
-.dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  background: rgba(255 255 255 / 0.5);
-  transition: background 0.2s;
-  pointer-events: auto;
-}
-.dot.active { background: #fff; }
 
-/* ─── Стрелка-иконка ──────────────────────────────────────────────────────── */
+/* ─── Стрелка-иконка ──────────────────────────────────────────────────── */
 .hook-arrow {
   display: inline-block;
   width: 1.2em;
@@ -198,7 +174,7 @@ a:not(.project-link):hover {
   overflow: visible;
 }
 
-/* ─── Инфо под проектом ───────────────────────────────────────────────────── */
+/* ─── Инфо под проектом ───────────────────────────────────────────────── */
 .project-info {
   display: flex;
   flex-wrap: wrap;
@@ -215,12 +191,11 @@ a:not(.project-link):hover {
   color: var(--text-muted);
 }
 
-/* ─── Футер страницы ──────────────────────────────────────────────────────── */
 .page-footer {
-  display: none;                
+  display: none;
 }
 
-/* ─── Десктоп: копирайт в правом нижнем углу ─────────────────────────────── */
+/* ─── Десктоп: копирайт ──────────────────────────────────────────────── */
 @media (min-width: 769px) {
   .main-content::after {
     content: '© 2026 Настя Юрьева';
@@ -232,34 +207,30 @@ a:not(.project-link):hover {
   }
 }
 
-/* ─── Мобила ──────────────────────────────────────────────────────────────── */
+/* ─── Мобила ─────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .sidebar {
     position: relative;
     width: 100%;
     height: auto;
-    padding: 1.5rem 1rem 0; 
+    padding: 1.5rem 1rem 0;
   }
 
   .sidebar-nav { margin: 1.5rem 0 0; }
-
   .menu-grid { flex-wrap: wrap; }
-
   .email-mobile  { display: block; }
   .sidebar-footer { display: none; }
 
   .main-content {
     margin-left: 0;
     width: 100%;
-    padding: 2rem 1rem;   
-    flex: 1;                
+    padding: 2rem 1rem;
+    flex: 1;
     display: flex;
     flex-direction: column;
   }
 
   .projects-list { padding-bottom: 1rem; }
-
-  .dots-container { display: flex; }
 
   body {
     display: flex;
@@ -278,11 +249,11 @@ a:not(.project-link):hover {
     justify-content: space-between;
     align-items: center;
     padding-top: 2rem;
-    margin-top: auto;  
+    margin-top: auto;
   }
 }
 
-/* ─── Страница «Инфо» ─────────────────────────────────────────────────────── */
+/* ─── Страница «Инфо» ──────────────────────────────────────────────────── */
 .info-photo {
   display: block;
   max-width: 10rem;
@@ -301,7 +272,6 @@ a:not(.project-link):hover {
   margin-bottom: 3rem;
   font-size: var(--font-base);
 }
-
 .manifest-text p { margin-bottom: 3rem; }
 
 @media (max-width: 768px) {
@@ -311,13 +281,12 @@ a:not(.project-link):hover {
   }
 }
 
-/* ─── Страница «Архив» ────────────────────────────────────────────────────── */
+/* ─── Страница «Архив» ────────────────────────────────────────────────── */
 .archive-masonry {
   column-count: 2;
   column-gap: 1rem;
   margin-bottom: 3rem;
 }
-
 .archive-masonry img {
   display: block;
   width: 100%;
