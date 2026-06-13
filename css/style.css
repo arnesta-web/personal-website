@@ -157,9 +157,8 @@ a:not(.project-link):hover {
 .slide.active img {
   visibility: visible;
 }
-
 .dots-container {
-  display: none !important;
+  display: none;
 }
 
 /* ─── Стрелка-иконка ──────────────────────────────────────────────────── */
@@ -191,17 +190,15 @@ a:not(.project-link):hover {
 }
 
 .page-footer {
-  display: none; /* по умолчанию скрыт, показывается только на мобильных */
+  display: none; 
 }
 
-/* НОВЫЙ КЛАСС: десктопный копирайт, по умолчанию скрыт */
 .footer-two {
   display: none;
 }
 
-/* ─── Десктоп: показываем .footer-two как абсолютно позиционированный блок ───────────────────── */
+
 @media (min-width: 769px) {
-  /* Удалён псевдоэлемент main-content::after, теперь используем реальный элемент */
   .footer-two {
     display: block;
     position: absolute;
