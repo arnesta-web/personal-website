@@ -6,7 +6,7 @@ const IMAGES_DIR = path.join(__dirname, 'images');
 const SIZES = [800, 1600, 2000];   // ширины, которые будут создаваться
 const WEBP_QUALITY = 92;
 const WEBP_EFFORT = 6;
-const DELETE_ORIGINALS = false;      // потом поменяешь на true
+const DELETE_ORIGINALS = true;      // потом поменяешь на true
 
 async function processProject(projectName) {
   const projectPath = path.join(IMAGES_DIR, projectName);

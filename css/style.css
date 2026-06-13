@@ -134,7 +134,7 @@ a:not(.project-link):hover {
 .slider {
   position: relative;
   width: 100%;
-  touch-action: pan-y;          /* разрешаем вертикальный скролл */
+  touch-action: pan-y;
   user-select: none;
   cursor: e-resize;
 }
@@ -158,7 +158,6 @@ a:not(.project-link):hover {
   visibility: visible;
 }
 
-/* скрываем контейнер точек, если где-то остался */
 .dots-container {
   display: none !important;
 }
@@ -192,18 +191,25 @@ a:not(.project-link):hover {
 }
 
 .page-footer {
+  display: none; /* по умолчанию скрыт, показывается только на мобильных */
+}
+
+/* НОВЫЙ КЛАСС: десктопный копирайт, по умолчанию скрыт */
+.footer-two {
   display: none;
 }
 
-/* ─── Десктоп: копирайт ──────────────────────────────────────────────── */
+/* ─── Десктоп: показываем .footer-two как абсолютно позиционированный блок ───────────────────── */
 @media (min-width: 769px) {
-  .main-content::after {
-    content: '© 2026 Настя Юрьева';
+  /* Удалён псевдоэлемент main-content::after, теперь используем реальный элемент */
+  .footer-two {
+    display: block;
     position: absolute;
     bottom: 2rem;
     right: 2rem;
     font-size: var(--font-base);
     color: var(--text);
+    z-index: 1;
   }
 }
 
@@ -219,6 +225,7 @@ a:not(.project-link):hover {
   .sidebar-nav { margin: 1.5rem 0 0; }
   .menu-grid { flex-wrap: wrap; }
   .email-mobile  { display: block; }
+  .email-desktop { display: none; }
   .sidebar-footer { display: none; }
 
   .main-content {
