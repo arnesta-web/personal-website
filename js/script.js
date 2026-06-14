@@ -16,62 +16,52 @@
   updateTime();
   setInterval(updateTime, 1000);
 
-  // ─── Манифест адаптивных изображений ───────────────────────────────────────
-  let imagesManifest = null;
+  // ─── Автоматическая обёртка <img> в <picture> ─────────────────────────────
 
-  async function loadImagesManifest() {
-    if (imagesManifest) return imagesManifest;
-    try {
-      const res = await fetch('/images-manifest.json');
-      if (res.ok) imagesManifest = await res.json();
-    } catch (e) {
-      console.warn('Манифест изображений не загружен, srcset не будет добавлен.');
-    }
-    return imagesManifest;
-  }
+  function wrapImagesInPicture(container) {
+    const images = container.querySelectorAll('.slide img');
+    images.forEach(img => {
+      // Проверяем, не обёрнут ли уже (чтобы не делать дважды)
+      if (img.parentElement.tagName === 'PICTURE') return;
 
-  // ─── Улучшение изображений (srcset из манифеста) ───────────────────────────
-  function enhanceImages(container) {
-    const imgs = container.querySelectorAll('.slide img');
-    if (!imgs.length) return;
-
-    if (!imagesManifest) {
-      loadImagesManifest().then(() => enhanceImagesNow(imgs));
-    } else {
-      enhanceImagesNow(imgs);
-    }
-  }
-
-  function enhanceImagesNow(imgs) {
-    // Собираем все доступные ширины из манифеста
-    const allSizes = new Set();
-    for (const project in imagesManifest) {
-      for (const base in imagesManifest[project]) {
-        imagesManifest[project][base].forEach(item => allSizes.add(item.width));
-      }
-    }
-    const sizesArray = [...allSizes].sort((a, b) => a - b);
-    if (sizesArray.length === 0) return;
-
-    imgs.forEach(img => {
       const src = img.getAttribute('src');
       if (!src) return;
 
-      // Ищем паттерн: что-то/имя-ЦИФРЫ.webp
+      // Должен подходить под паттерн имя-800.webp
       const match = src.match(/^(.+)-(\d+)\.webp$/);
       if (!match) return;
 
-      const basePath = match[1];   // "/images/project/project_N"
-      const srcset = sizesArray.map(w => `${basePath}-${w}.webp ${w}w`).join(', ');
-      img.setAttribute('srcset', srcset);
-      // img.setAttribute('sizes', '(max-width: 768px) 100vw, 2000px');
-      img.setAttribute('sizes', '(max-width: 768px) 100vw, calc(60vw - 4rem)');
+      const basePath = match[1];   // "/images/terrasport/terrasport_1"
+      const src800 = `${basePath}-800.webp`;
+      const src2000 = `${basePath}-2000.webp`;
+
+      // Создаём <picture>
+      const picture = document.createElement('picture');
+
+      const sourceMobile = document.createElement('source');
+      sourceMobile.media = '(max-width: 768px)';
+      sourceMobile.srcset = src800;
+
+      const sourceDesktop = document.createElement('source');
+      sourceDesktop.media = '(min-width: 769px)';
+      sourceDesktop.srcset = src2000;
+
+      picture.appendChild(sourceMobile);
+      picture.appendChild(sourceDesktop);
+
+      // Переносим оригинальный <img> внутрь <picture>
+      img.setAttribute('src', src800); // fallback
+      picture.appendChild(img.cloneNode()); // Клонируем, чтобы избежать конфликтов
+      img.replaceWith(picture);
     });
   }
 
   // ─── Галерея с непрерывным переключением ────────────────────────────────────
 
   function initSliders(root = document) {
+    // Сначала оборачиваем все картинки в <picture>
+    wrapImagesInPicture(root);
+
     root.querySelectorAll('.slider:not([data-initialized])').forEach(slider => {
       const slides = [...slider.querySelectorAll('.slide')];
       const total = slides.length;
@@ -133,9 +123,6 @@
       slider.querySelectorAll('img').forEach(img => {
         img.addEventListener('dragstart', e => e.preventDefault());
       });
-
-      // Адаптивные srcset для картинок в этом слайдере
-      enhanceImages(slider);
 
       slider.dataset.initialized = 'true';
     });
