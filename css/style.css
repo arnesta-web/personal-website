@@ -63,6 +63,21 @@ a:not(.project-link):hover {
   transition: none;
 }
 
+a.inline-link {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+  text-decoration-thickness: 1px;
+  text-decoration-skip-ink: none;
+  color: var(--text); 
+  transition: color 0.5s ease;
+}
+
+a.inline-link:hover {
+  color: var(--text-link);
+  text-decoration-color: var(--text-link);
+  transition: none;
+}
+
 .sidebar {
   position: fixed;
   inset: 0 auto 0 0;
