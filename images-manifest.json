@@ -1,74 +1,681 @@
 {
   "archive": {},
-  "bonsilk": {},
-  "deep": {
-    "deep_1": [
+  "bonsilk": {
+    "bonsilk_1": [
       {
         "width": 800,
-        "file": "deep_1-800.webp"
+        "file": "bonsilk_1-800.webp"
       },
       {
         "width": 2000,
-        "file": "deep_1-2000.webp"
+        "file": "bonsilk_1-2000.webp"
       }
     ],
-    "deep_2": [
+    "bonsilk_2": [
       {
         "width": 800,
-        "file": "deep_2-800.webp"
+        "file": "bonsilk_2-800.webp"
       },
       {
         "width": 2000,
-        "file": "deep_2-2000.webp"
+        "file": "bonsilk_2-2000.webp"
       }
     ],
-    "deep_3": [
+    "bonsilk_3": [
       {
         "width": 800,
-        "file": "deep_3-800.webp"
+        "file": "bonsilk_3-800.webp"
       },
       {
         "width": 2000,
-        "file": "deep_3-2000.webp"
+        "file": "bonsilk_3-2000.webp"
       }
     ],
-    "deep_4": [
+    "bonsilk_4": [
       {
         "width": 800,
-        "file": "deep_4-800.webp"
+        "file": "bonsilk_4-800.webp"
       },
       {
         "width": 2000,
-        "file": "deep_4-2000.webp"
+        "file": "bonsilk_4-2000.webp"
       }
     ],
-    "deep_5": [
+    "bonsilk_5": [
       {
         "width": 800,
-        "file": "deep_5-800.webp"
+        "file": "bonsilk_5-800.webp"
       },
       {
         "width": 2000,
-        "file": "deep_5-2000.webp"
+        "file": "bonsilk_5-2000.webp"
       }
     ],
-    "deep_6": [
+    "bonsilk_6": [
       {
         "width": 800,
-        "file": "deep_6-800.webp"
+        "file": "bonsilk_6-800.webp"
       },
       {
         "width": 2000,
-        "file": "deep_6-2000.webp"
+        "file": "bonsilk_6-2000.webp"
+      }
+    ],
+    "bonsilk_7": [
+      {
+        "width": 800,
+        "file": "bonsilk_7-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "bonsilk_7-2000.webp"
+      }
+    ],
+    "bonsilk_8": [
+      {
+        "width": 800,
+        "file": "bonsilk_8-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "bonsilk_8-2000.webp"
+      }
+    ],
+    "bonsilk_9": [
+      {
+        "width": 800,
+        "file": "bonsilk_9-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "bonsilk_9-2000.webp"
+      }
+    ],
+    "bonsilk_10": [
+      {
+        "width": 800,
+        "file": "bonsilk_10-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "bonsilk_10-2000.webp"
+      }
+    ],
+    "bonsilk_11": [
+      {
+        "width": 800,
+        "file": "bonsilk_11-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "bonsilk_11-2000.webp"
+      }
+    ],
+    "bonsilk_12": [
+      {
+        "width": 800,
+        "file": "bonsilk_12-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "bonsilk_12-2000.webp"
       }
     ]
   },
-  "eastwest": {},
-  "epoque": {},
-  "floretlavr": {},
-  "hotelguru": {},
+  "deep": {},
+  "eastwest": {
+    "eastwest_1": [
+      {
+        "width": 800,
+        "file": "eastwest_1-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "eastwest_1-2000.webp"
+      }
+    ],
+    "eastwest_2": [
+      {
+        "width": 800,
+        "file": "eastwest_2-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "eastwest_2-2000.webp"
+      }
+    ],
+    "eastwest_3": [
+      {
+        "width": 800,
+        "file": "eastwest_3-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "eastwest_3-2000.webp"
+      }
+    ],
+    "eastwest_4": [
+      {
+        "width": 800,
+        "file": "eastwest_4-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "eastwest_4-2000.webp"
+      }
+    ],
+    "eastwest_5": [
+      {
+        "width": 800,
+        "file": "eastwest_5-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "eastwest_5-2000.webp"
+      }
+    ],
+    "eastwest_6": [
+      {
+        "width": 800,
+        "file": "eastwest_6-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "eastwest_6-2000.webp"
+      }
+    ],
+    "eastwest_7": [
+      {
+        "width": 800,
+        "file": "eastwest_7-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "eastwest_7-2000.webp"
+      }
+    ],
+    "eastwest_8": [
+      {
+        "width": 800,
+        "file": "eastwest_8-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "eastwest_8-2000.webp"
+      }
+    ]
+  },
+  "epoque": {
+    "epoque_1": [
+      {
+        "width": 800,
+        "file": "epoque_1-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "epoque_1-2000.webp"
+      }
+    ],
+    "epoque_2": [
+      {
+        "width": 800,
+        "file": "epoque_2-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "epoque_2-2000.webp"
+      }
+    ],
+    "epoque_3": [
+      {
+        "width": 800,
+        "file": "epoque_3-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "epoque_3-2000.webp"
+      }
+    ],
+    "epoque_4": [
+      {
+        "width": 800,
+        "file": "epoque_4-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "epoque_4-2000.webp"
+      }
+    ],
+    "epoque_5": [
+      {
+        "width": 800,
+        "file": "epoque_5-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "epoque_5-2000.webp"
+      }
+    ],
+    "epoque_6": [
+      {
+        "width": 800,
+        "file": "epoque_6-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "epoque_6-2000.webp"
+      }
+    ],
+    "epoque_7": [
+      {
+        "width": 800,
+        "file": "epoque_7-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "epoque_7-2000.webp"
+      }
+    ],
+    "epoque_8": [
+      {
+        "width": 800,
+        "file": "epoque_8-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "epoque_8-2000.webp"
+      }
+    ]
+  },
+  "floretlavr": {
+    "floretlavr_1": [
+      {
+        "width": 800,
+        "file": "floretlavr_1-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "floretlavr_1-2000.webp"
+      }
+    ],
+    "floretlavr_2": [
+      {
+        "width": 800,
+        "file": "floretlavr_2-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "floretlavr_2-2000.webp"
+      }
+    ],
+    "floretlavr_3": [
+      {
+        "width": 800,
+        "file": "floretlavr_3-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "floretlavr_3-2000.webp"
+      }
+    ],
+    "floretlavr_4": [
+      {
+        "width": 800,
+        "file": "floretlavr_4-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "floretlavr_4-2000.webp"
+      }
+    ],
+    "floretlavr_5": [
+      {
+        "width": 800,
+        "file": "floretlavr_5-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "floretlavr_5-2000.webp"
+      }
+    ],
+    "floretlavr_6": [
+      {
+        "width": 800,
+        "file": "floretlavr_6-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "floretlavr_6-2000.webp"
+      }
+    ],
+    "floretlavr_7": [
+      {
+        "width": 800,
+        "file": "floretlavr_7-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "floretlavr_7-2000.webp"
+      }
+    ],
+    "floretlavr_8": [
+      {
+        "width": 800,
+        "file": "floretlavr_8-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "floretlavr_8-2000.webp"
+      }
+    ],
+    "floretlavr_9": [
+      {
+        "width": 800,
+        "file": "floretlavr_9-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "floretlavr_9-2000.webp"
+      }
+    ]
+  },
+  "hotelguru": {
+    "hotelguru_1": [
+      {
+        "width": 800,
+        "file": "hotelguru_1-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "hotelguru_1-2000.webp"
+      }
+    ],
+    "hotelguru_2": [
+      {
+        "width": 800,
+        "file": "hotelguru_2-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "hotelguru_2-2000.webp"
+      }
+    ],
+    "hotelguru_3": [
+      {
+        "width": 800,
+        "file": "hotelguru_3-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "hotelguru_3-2000.webp"
+      }
+    ],
+    "hotelguru_4": [
+      {
+        "width": 800,
+        "file": "hotelguru_4-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "hotelguru_4-2000.webp"
+      }
+    ],
+    "hotelguru_5": [
+      {
+        "width": 800,
+        "file": "hotelguru_5-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "hotelguru_5-2000.webp"
+      }
+    ],
+    "hotelguru_6": [
+      {
+        "width": 800,
+        "file": "hotelguru_6-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "hotelguru_6-2000.webp"
+      }
+    ],
+    "hotelguru_7": [
+      {
+        "width": 800,
+        "file": "hotelguru_7-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "hotelguru_7-2000.webp"
+      }
+    ]
+  },
   "incf": {},
-  "portayas": {},
-  "seedlings": {},
-  "terrasport": {}
+  "portayas": {
+    "portayas_1": [
+      {
+        "width": 800,
+        "file": "portayas_1-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "portayas_1-2000.webp"
+      }
+    ],
+    "portayas_2": [
+      {
+        "width": 800,
+        "file": "portayas_2-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "portayas_2-2000.webp"
+      }
+    ],
+    "portayas_3": [
+      {
+        "width": 800,
+        "file": "portayas_3-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "portayas_3-2000.webp"
+      }
+    ],
+    "portayas_4": [
+      {
+        "width": 800,
+        "file": "portayas_4-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "portayas_4-2000.webp"
+      }
+    ],
+    "portayas_5": [
+      {
+        "width": 800,
+        "file": "portayas_5-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "portayas_5-2000.webp"
+      }
+    ],
+    "portayas_6": [
+      {
+        "width": 800,
+        "file": "portayas_6-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "portayas_6-2000.webp"
+      }
+    ],
+    "portayas_7": [
+      {
+        "width": 800,
+        "file": "portayas_7-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "portayas_7-2000.webp"
+      }
+    ],
+    "portayas_8": [
+      {
+        "width": 800,
+        "file": "portayas_8-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "portayas_8-2000.webp"
+      }
+    ]
+  },
+  "seedlings": {
+    "seedlings_1": [
+      {
+        "width": 800,
+        "file": "seedlings_1-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "seedlings_1-2000.webp"
+      }
+    ],
+    "seedlings_2": [
+      {
+        "width": 800,
+        "file": "seedlings_2-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "seedlings_2-2000.webp"
+      }
+    ],
+    "seedlings_3": [
+      {
+        "width": 800,
+        "file": "seedlings_3-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "seedlings_3-2000.webp"
+      }
+    ],
+    "seedlings_4": [
+      {
+        "width": 800,
+        "file": "seedlings_4-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "seedlings_4-2000.webp"
+      }
+    ],
+    "seedlings_5": [
+      {
+        "width": 800,
+        "file": "seedlings_5-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "seedlings_5-2000.webp"
+      }
+    ],
+    "seedlings_6": [
+      {
+        "width": 800,
+        "file": "seedlings_6-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "seedlings_6-2000.webp"
+      }
+    ],
+    "seedlings_7": [
+      {
+        "width": 800,
+        "file": "seedlings_7-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "seedlings_7-2000.webp"
+      }
+    ],
+    "seedlings_8": [
+      {
+        "width": 800,
+        "file": "seedlings_8-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "seedlings_8-2000.webp"
+      }
+    ]
+  },
+  "terrasport": {
+    "terrasport_1": [
+      {
+        "width": 800,
+        "file": "terrasport_1-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "terrasport_1-2000.webp"
+      }
+    ],
+    "terrasport_2": [
+      {
+        "width": 800,
+        "file": "terrasport_2-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "terrasport_2-2000.webp"
+      }
+    ],
+    "terrasport_3": [
+      {
+        "width": 800,
+        "file": "terrasport_3-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "terrasport_3-2000.webp"
+      }
+    ],
+    "terrasport_4": [
+      {
+        "width": 800,
+        "file": "terrasport_4-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "terrasport_4-2000.webp"
+      }
+    ],
+    "terrasport_5": [
+      {
+        "width": 800,
+        "file": "terrasport_5-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "terrasport_5-2000.webp"
+      }
+    ],
+    "terrasport_6": [
+      {
+        "width": 800,
+        "file": "terrasport_6-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "terrasport_6-2000.webp"
+      }
+    ]
+  }
 }
