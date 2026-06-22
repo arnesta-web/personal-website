@@ -41,6 +41,26 @@
         "width": 2000,
         "file": "deep_4-2000.webp"
       }
+    ],
+    "deep_5": [
+      {
+        "width": 800,
+        "file": "deep_5-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "deep_5-2000.webp"
+      }
+    ],
+    "deep_6": [
+      {
+        "width": 800,
+        "file": "deep_6-800.webp"
+      },
+      {
+        "width": 2000,
+        "file": "deep_6-2000.webp"
+      }
     ]
   },
   "eastwest": {},
