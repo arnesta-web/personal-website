@@ -3,18 +3,7 @@
   "bonsilk": {},
   "deep": {},
   "eastwest": {},
-  "epoque": {
-    "epoque_1": [
-      {
-        "width": 800,
-        "file": "epoque_1-800.webp"
-      },
-      {
-        "width": 2000,
-        "file": "epoque_1-2000.webp"
-      }
-    ]
-  },
+  "epoque": {},
   "floretlavr": {},
   "hotelguru": {},
   "incf": {},
