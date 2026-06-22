@@ -300,6 +300,10 @@ a.inline-link:hover {
   }
 }
 
+p:not(:last-child) {
+  margin-bottom: 1.5em;
+}
+
 /* ─── Страница «Архив» ────────────────────────────────────────────────── */
 .archive-masonry {
   column-count: 2;
