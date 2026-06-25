@@ -350,6 +350,6 @@ p:not(:last-child) {
 
   .project-desc {
     flex-basis: 100%;        
-    margin-top: 0.2em;
+    margin-top: 0em;
   }
 }
