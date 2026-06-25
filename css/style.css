@@ -19,7 +19,7 @@
 :root {
   --bg:          #FAF4EB;
   --text:        #240000;
-  --text-muted:  #a2938e;
+  --text-muted:  #808080;
   --text-link:   #4F312F;
 
   --font-base: clamp(1.1rem, 1vw, 1.5rem);
@@ -323,4 +323,13 @@ p:not(:last-child) {
     column-count: 1;
     margin-bottom: 1rem;
   }
+}
+
+/* ─── Индикатор слайдов на мобильных ────────────────────────────── */
+.slide-counter {
+  font-size: var(--font-base);
+  color: var(--text-muted);
+  margin-left: 0.5em;
+  white-space: nowrap;
+  font-feature-settings: "tnum";
 }

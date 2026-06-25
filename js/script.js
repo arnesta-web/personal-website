@@ -52,7 +52,7 @@
     });
   }
 
-  // ─── Галерея с непрерывным переключением (десктоп) / клик по половинам (мобила) ──
+  // ─── Галерея: десктоп – движение мыши, мобила – клик по половинам + свайп ──
 
   function initSliders(root = document) {
     wrapImagesInPicture(root);
@@ -68,16 +68,80 @@
       let current = 0;
       const isMobile = window.innerWidth <= 768;
 
+      // ─── Создаём / находим индикатор на мобильных ──────────────────────
+      let counterEl = null;
+      if (isMobile) {
+        const project = slider.closest('.project');
+        if (project) {
+          const info = project.querySelector('.project-info');
+          if (info) {
+            // Ищем существующий индикатор, чтобы не дублировать
+            let existing = info.querySelector('.slide-counter');
+            if (!existing) {
+              counterEl = document.createElement('span');
+              counterEl.className = 'slide-counter';
+              info.appendChild(counterEl);
+            } else {
+              counterEl = existing;
+            }
+          }
+        }
+      }
+
       function goTo(index) {
         if (index === current || index < 0 || index >= total) return;
         slides[current].classList.remove('active');
         slides[index].classList.add('active');
         current = index;
+
+        // Обновляем индикатор
+        if (counterEl) {
+          counterEl.textContent = `${current + 1}/${total}`;
+        }
       }
 
-      // ─── Мобильные: клик по левой / правой половине ──────────────────────
+      // ─── Мобильные: клик по половине + свайп ──────────────────────────────
       if (isMobile) {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let isSwiping = false;
+
+        slider.addEventListener('touchstart', (e) => {
+          const touch = e.touches[0];
+          touchStartX = touch.clientX;
+          touchStartY = touch.clientY;
+          isSwiping = false;
+        }, { passive: true });
+
+        slider.addEventListener('touchmove', (e) => {
+          const touch = e.touches[0];
+          const deltaX = touch.clientX - touchStartX;
+          const deltaY = touch.clientY - touchStartY;
+          const absX = Math.abs(deltaX);
+          const absY = Math.abs(deltaY);
+
+          if (absY > absX) return;
+
+          e.preventDefault();
+          isSwiping = true;
+
+          const threshold = 30;
+          if (absX > threshold) {
+            if (deltaX < 0) {
+              goTo((current + 1) % total);
+            } else {
+              goTo((current - 1 + total) % total);
+            }
+            touchStartX = touch.clientX;
+            touchStartY = touch.clientY;
+          }
+        }, { passive: false });
+
         slider.addEventListener('click', (e) => {
+          if (isSwiping) {
+            isSwiping = false;
+            return;
+          }
           const rect = slider.getBoundingClientRect();
           const x = e.clientX - rect.left;
           const half = rect.width / 2;
@@ -87,6 +151,11 @@
             goTo((current + 1) % total);
           }
         });
+
+        // Устанавливаем начальное значение индикатора
+        if (counterEl) {
+          counterEl.textContent = `1/${total}`;
+        }
       }
       // ─── Десктоп: непрерывное переключение движением мыши ──────────────
       else {
