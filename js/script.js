@@ -21,21 +21,18 @@
   function wrapImagesInPicture(container) {
     const images = container.querySelectorAll('.slide img');
     images.forEach(img => {
-      // Проверяем, не обёрнут ли уже (чтобы не делать дважды)
       if (img.parentElement.tagName === 'PICTURE') return;
 
       const src = img.getAttribute('src');
       if (!src) return;
 
-      // Должен подходить под паттерн имя-800.webp
       const match = src.match(/^(.+)-(\d+)\.webp$/);
       if (!match) return;
 
-      const basePath = match[1];   // "/images/terrasport/terrasport_1"
+      const basePath = match[1];
       const src800 = `${basePath}-800.webp`;
       const src2000 = `${basePath}-2000.webp`;
 
-      // Создаём <picture>
       const picture = document.createElement('picture');
 
       const sourceMobile = document.createElement('source');
@@ -49,17 +46,15 @@
       picture.appendChild(sourceMobile);
       picture.appendChild(sourceDesktop);
 
-      // Переносим оригинальный <img> внутрь <picture>
-      img.setAttribute('src', src800); // fallback
-      picture.appendChild(img.cloneNode()); // Клонируем, чтобы избежать конфликтов
+      img.setAttribute('src', src800);
+      picture.appendChild(img.cloneNode());
       img.replaceWith(picture);
     });
   }
 
-  // ─── Галерея с непрерывным переключением ────────────────────────────────────
+  // ─── Галерея с непрерывным переключением (десктоп) / клик по половинам (мобила) ──
 
   function initSliders(root = document) {
-    // Сначала оборачиваем все картинки в <picture>
     wrapImagesInPicture(root);
 
     root.querySelectorAll('.slider:not([data-initialized])').forEach(slider => {
@@ -71,6 +66,7 @@
       }
 
       let current = 0;
+      const isMobile = window.innerWidth <= 768;
 
       function goTo(index) {
         if (index === current || index < 0 || index >= total) return;
@@ -79,36 +75,39 @@
         current = index;
       }
 
-      function updateFromPosition(clientX) {
-        const rect = slider.getBoundingClientRect();
-        const x = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-        const index = Math.min(total - 1, Math.floor(x * total));
-        goTo(index);
+      // ─── Мобильные: клик по левой / правой половине ──────────────────────
+      if (isMobile) {
+        slider.addEventListener('click', (e) => {
+          const rect = slider.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const half = rect.width / 2;
+          if (x < half) {
+            goTo((current - 1 + total) % total);
+          } else {
+            goTo((current + 1) % total);
+          }
+        });
+      }
+      // ─── Десктоп: непрерывное переключение движением мыши ──────────────
+      else {
+        slider.addEventListener('mousemove', (e) => {
+          const rect = slider.getBoundingClientRect();
+          const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+          const index = Math.min(total - 1, Math.floor(x * total));
+          goTo(index);
+        });
+
+        slider.addEventListener('mousemove', (e) => {
+          const { left, width } = slider.getBoundingClientRect();
+          slider.style.cursor = (e.clientX - left) < width / 2 ? 'w-resize' : 'e-resize';
+        });
+
+        slider.addEventListener('mouseleave', () => {
+          slider.style.cursor = '';
+        });
       }
 
-      // Движение мыши (без зажатия) — переключение по позиции курсора
-      slider.addEventListener('mousemove', (e) => {
-        updateFromPosition(e.clientX);
-      });
-
-      // Меняем системный курсор для подсказки
-      slider.addEventListener('mousemove', (e) => {
-        const { left, width } = slider.getBoundingClientRect();
-        slider.style.cursor = (e.clientX - left) < width / 2 ? 'w-resize' : 'e-resize';
-      });
-
-      slider.addEventListener('mouseleave', () => {
-        slider.style.cursor = '';
-      });
-
-      // Мобильные: свайп (движение пальца)
-      slider.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        const touch = e.touches[0];
-        updateFromPosition(touch.clientX);
-      }, { passive: false });
-
-      // Клавиатура для доступности
+      // ─── Клавиатура и защита от перетаскивания (общие) ──────────────────
       slider.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft') {
           e.preventDefault();
@@ -119,7 +118,6 @@
         }
       });
 
-      // Запрет перетаскивания картинок
       slider.querySelectorAll('img').forEach(img => {
         img.addEventListener('dragstart', e => e.preventDefault());
       });
