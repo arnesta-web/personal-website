@@ -341,15 +341,15 @@ p:not(:last-child) {
 
   .slide-counter {
     flex: 0 0 auto;
-    margin-left: auto;          /* прижимаем к правому краю */
-    color: var(--text-muted);   /* серый, как описание */
+    margin-left: auto;         
+    color: var(--text);   
     font-size: var(--font-base);
     font-feature-settings: "tnum";
     white-space: nowrap;
   }
 
   .project-desc {
-    flex-basis: 100%;           /* переносим описание на новую строку */
+    flex-basis: 100%;        
     margin-top: 0.2em;
   }
 }
