@@ -325,11 +325,31 @@ p:not(:last-child) {
   }
 }
 
-/* ─── Индикатор слайдов на мобильных ────────────────────────────── */
-.slide-counter {
-  font-size: var(--font-base);
-  color: var(--text-muted);
-  margin-left: 0.5em;
-  white-space: nowrap;
-  font-feature-settings: "tnum";
+/* ─── Индикатор слайдов на мобильных: выравнивание ────────────── */
+@media (max-width: 768px) {
+  .project-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .project-link {
+    flex: 1 1 auto;
+    margin-right: 0.5em;
+  }
+
+  .slide-counter {
+    flex: 0 0 auto;
+    margin-left: auto;          /* прижимаем к правому краю */
+    color: var(--text-muted);   /* серый, как описание */
+    font-size: var(--font-base);
+    font-feature-settings: "tnum";
+    white-space: nowrap;
+  }
+
+  .project-desc {
+    flex-basis: 100%;           /* переносим описание на новую строку */
+    margin-top: 0.2em;
+  }
 }

@@ -1,227 +1,141 @@
 (() => {
-  // ─── Время ──────────────────────────────────────────────────────────────────
-
+  // ─── Часы ────────────────────────────────────────────────────────
   function updateTime() {
-    const timeStr = new Date().toLocaleTimeString('ru-RU', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    });
-    const liveTime = document.getElementById('live-time');
-    const liveTimeMobile = document.getElementById('live-time-mobile');
-    if (liveTime) liveTime.textContent = timeStr;
-    if (liveTimeMobile) liveTimeMobile.textContent = timeStr;
+    const t = new Date().toLocaleTimeString('ru-RU', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    ['live-time','live-time-mobile'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = t; });
   }
-
   updateTime();
   setInterval(updateTime, 1000);
 
-  // ─── Автоматическая обёртка <img> в <picture> ─────────────────────────────
-
+  // ─── <picture> для картинок ────────────────────────────────────
   function wrapImagesInPicture(container) {
-    const images = container.querySelectorAll('.slide img');
-    images.forEach(img => {
+    container.querySelectorAll('.slide img').forEach(img => {
       if (img.parentElement.tagName === 'PICTURE') return;
-
       const src = img.getAttribute('src');
       if (!src) return;
-
-      const match = src.match(/^(.+)-(\d+)\.webp$/);
-      if (!match) return;
-
-      const basePath = match[1];
-      const src800 = `${basePath}-800.webp`;
-      const src2000 = `${basePath}-2000.webp`;
-
-      const picture = document.createElement('picture');
-
-      const sourceMobile = document.createElement('source');
-      sourceMobile.media = '(max-width: 768px)';
-      sourceMobile.srcset = src800;
-
-      const sourceDesktop = document.createElement('source');
-      sourceDesktop.media = '(min-width: 769px)';
-      sourceDesktop.srcset = src2000;
-
-      picture.appendChild(sourceMobile);
-      picture.appendChild(sourceDesktop);
-
-      img.setAttribute('src', src800);
-      picture.appendChild(img.cloneNode());
-      img.replaceWith(picture);
+      const m = src.match(/^(.+)-(\d+)\.webp$/);
+      if (!m) return;
+      const base = m[1];
+      const pic = document.createElement('picture');
+      ['800','2000'].forEach((size, i) => {
+        const source = document.createElement('source');
+        source.media = i === 0 ? '(max-width:768px)' : '(min-width:769px)';
+        source.srcset = `${base}-${size}.webp`;
+        pic.appendChild(source);
+      });
+      img.setAttribute('src', `${base}-800.webp`);
+      pic.appendChild(img.cloneNode());
+      img.replaceWith(pic);
     });
   }
 
-  // ─── Галерея: десктоп – движение мыши, мобила – клик по половинам + свайп ──
-
+  // ─── Слайдеры ──────────────────────────────────────────────────
   function initSliders(root = document) {
     wrapImagesInPicture(root);
-
     root.querySelectorAll('.slider:not([data-initialized])').forEach(slider => {
       const slides = [...slider.querySelectorAll('.slide')];
       const total = slides.length;
-      if (total < 2) {
-        slider.dataset.initialized = 'true';
-        return;
-      }
+      if (total < 2) { slider.dataset.initialized = 'true'; return; }
 
       let current = 0;
       const isMobile = window.innerWidth <= 768;
 
-      // ─── Создаём / находим индикатор на мобильных ──────────────────────
-      let counterEl = null;
+      // Счётчик на мобильных – вставляем сразу после ссылки
+      let counter = null;
       if (isMobile) {
-        const project = slider.closest('.project');
-        if (project) {
-          const info = project.querySelector('.project-info');
-          if (info) {
-            // Ищем существующий индикатор, чтобы не дублировать
-            let existing = info.querySelector('.slide-counter');
-            if (!existing) {
-              counterEl = document.createElement('span');
-              counterEl.className = 'slide-counter';
-              info.appendChild(counterEl);
-            } else {
-              counterEl = existing;
-            }
+        const info = slider.closest('.project')?.querySelector('.project-info');
+        if (info) {
+          const link = info.querySelector('.project-link');
+          if (link) {
+            counter = info.querySelector('.slide-counter') || (() => {
+              const el = document.createElement('span');
+              el.className = 'slide-counter';
+              link.after(el); // ← после названия, перед описанием
+              return el;
+            })();
           }
         }
       }
 
-      function goTo(index) {
+      const goTo = (index) => {
         if (index === current || index < 0 || index >= total) return;
         slides[current].classList.remove('active');
         slides[index].classList.add('active');
         current = index;
+        if (counter) counter.textContent = `${current+1}/${total}`;
+      };
 
-        // Обновляем индикатор
-        if (counterEl) {
-          counterEl.textContent = `${current + 1}/${total}`;
-        }
-      }
-
-      // ─── Мобильные: клик по половине + свайп ──────────────────────────────
+      // Мобильные: свайп + клик по половинам
       if (isMobile) {
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let isSwiping = false;
-
-        slider.addEventListener('touchstart', (e) => {
-          const touch = e.touches[0];
-          touchStartX = touch.clientX;
-          touchStartY = touch.clientY;
-          isSwiping = false;
+        let startX = 0, startY = 0, swiping = false;
+        slider.addEventListener('touchstart', e => {
+          const t = e.touches[0];
+          startX = t.clientX; startY = t.clientY;
+          swiping = false;
         }, { passive: true });
 
-        slider.addEventListener('touchmove', (e) => {
-          const touch = e.touches[0];
-          const deltaX = touch.clientX - touchStartX;
-          const deltaY = touch.clientY - touchStartY;
-          const absX = Math.abs(deltaX);
-          const absY = Math.abs(deltaY);
-
-          if (absY > absX) return;
-
+        slider.addEventListener('touchmove', e => {
+          const t = e.touches[0];
+          const dx = t.clientX - startX, dy = t.clientY - startY;
+          if (Math.abs(dy) > Math.abs(dx)) return;
           e.preventDefault();
-          isSwiping = true;
-
-          const threshold = 30;
-          if (absX > threshold) {
-            if (deltaX < 0) {
-              goTo((current + 1) % total);
-            } else {
-              goTo((current - 1 + total) % total);
-            }
-            touchStartX = touch.clientX;
-            touchStartY = touch.clientY;
+          swiping = true;
+          if (Math.abs(dx) > 30) {
+            goTo(dx < 0 ? (current + 1) % total : (current - 1 + total) % total);
+            startX = t.clientX; startY = t.clientY;
           }
         }, { passive: false });
 
-        slider.addEventListener('click', (e) => {
-          if (isSwiping) {
-            isSwiping = false;
-            return;
-          }
-          const rect = slider.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const half = rect.width / 2;
-          if (x < half) {
-            goTo((current - 1 + total) % total);
-          } else {
-            goTo((current + 1) % total);
-          }
+        slider.addEventListener('click', e => {
+          if (swiping) { swiping = false; return; }
+          const half = slider.getBoundingClientRect().width / 2;
+          goTo(e.clientX - slider.getBoundingClientRect().left < half ? (current - 1 + total) % total : (current + 1) % total);
         });
 
-        // Устанавливаем начальное значение индикатора
-        if (counterEl) {
-          counterEl.textContent = `1/${total}`;
-        }
-      }
-      // ─── Десктоп: непрерывное переключение движением мыши ──────────────
+        if (counter) counter.textContent = `1/${total}`;
+      } 
+      // Десктоп: движение мыши
       else {
-        slider.addEventListener('mousemove', (e) => {
+        slider.addEventListener('mousemove', e => {
           const rect = slider.getBoundingClientRect();
           const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-          const index = Math.min(total - 1, Math.floor(x * total));
-          goTo(index);
+          goTo(Math.min(total - 1, Math.floor(x * total)));
+          slider.style.cursor = (e.clientX - rect.left) < rect.width/2 ? 'w-resize' : 'e-resize';
         });
-
-        slider.addEventListener('mousemove', (e) => {
-          const { left, width } = slider.getBoundingClientRect();
-          slider.style.cursor = (e.clientX - left) < width / 2 ? 'w-resize' : 'e-resize';
-        });
-
-        slider.addEventListener('mouseleave', () => {
-          slider.style.cursor = '';
-        });
+        slider.addEventListener('mouseleave', () => slider.style.cursor = '');
       }
 
-      // ─── Клавиатура и защита от перетаскивания (общие) ──────────────────
-      slider.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') {
-          e.preventDefault();
-          goTo((current - 1 + total) % total);
-        } else if (e.key === 'ArrowRight') {
-          e.preventDefault();
-          goTo((current + 1) % total);
-        }
+      // Клавиатура и защита от перетаскивания
+      slider.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); goTo((current - 1 + total) % total); }
+        else if (e.key === 'ArrowRight') { e.preventDefault(); goTo((current + 1) % total); }
       });
-
-      slider.querySelectorAll('img').forEach(img => {
-        img.addEventListener('dragstart', e => e.preventDefault());
-      });
+      slider.querySelectorAll('img').forEach(img => img.addEventListener('dragstart', e => e.preventDefault()));
 
       slider.dataset.initialized = 'true';
     });
   }
 
-  // ─── SPA-навигация ───────────────────────────────────────────────────────────
+  // ─── SPA-навигация ─────────────────────────────────────────────
+  const main = document.getElementById('main-content');
+  const homeHTML = main.innerHTML;
+  const footer = document.querySelector('.page-footer')?.outerHTML || '';
 
-  const mainContent = document.getElementById('main-content');
-  const homeSnapshot = mainContent.innerHTML;
-
-  const footerHTML = document.querySelector('.page-footer')?.outerHTML ?? '';
-
-  const routes = {
-    info: 'info-content.html',
-    archive: 'archive-content.html',
-  };
+  const routes = { info: 'info-content.html', archive: 'archive-content.html' };
 
   async function navigate(page) {
     if (page === 'home') {
-      mainContent.innerHTML = homeSnapshot;
-      initSliders(mainContent);
+      main.innerHTML = homeHTML;
     } else {
       try {
         const res = await fetch(routes[page]);
         if (!res.ok) throw new Error();
-        mainContent.innerHTML =
-          `<div style="flex:1 0 auto">${await res.text()}</div>${footerHTML}`;
+        main.innerHTML = `<div style="flex:1 0 auto">${await res.text()}</div>${footer}`;
       } catch {
-        mainContent.innerHTML = '<p style="padding:2rem">Ошибка загрузки</p>';
+        main.innerHTML = '<p style="padding:2rem">Ошибка загрузки</p>';
       }
-      initSliders(mainContent);
     }
+    initSliders(main);
     window.scrollTo(0, 0);
   }
 
@@ -234,19 +148,15 @@
     navigate(page);
   });
 
-  window.addEventListener('popstate', e => {
-    navigate(e.state?.page ?? 'home');
-  });
+  window.addEventListener('popstate', e => navigate(e.state?.page ?? 'home'));
 
-  // ─── Инициализация ───────────────────────────────────────────────────────────
   const path = window.location.pathname.replace(/\/$/, '');
-  const initialPage = path === '/info' ? 'info' : path === '/archive' ? 'archive' : null;
-
-  if (initialPage) {
-    history.replaceState({ page: initialPage }, '', `/${initialPage}`);
-    navigate(initialPage);
+  const initial = path === '/info' ? 'info' : path === '/archive' ? 'archive' : null;
+  if (initial) {
+    history.replaceState({ page: initial }, '', `/${initial}`);
+    navigate(initial);
   } else {
     history.replaceState({ page: 'home' }, '', '/');
-    initSliders(mainContent);
+    initSliders(main);
   }
 })();
